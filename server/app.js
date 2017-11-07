@@ -66,7 +66,7 @@ app.use(session({
 // should come before the router
 app.use(csrf());
 app.use((err, req, res, next) =>{
-  if(err.code !== '!EBADCSRFTOKEN') return next(err);
+  if(err.code !== 'EBADCSRFTOKEN') return next(err);
   
   console.log('Missing CSRF token');
   return false;
