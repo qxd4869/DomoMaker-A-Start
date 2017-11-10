@@ -1,4 +1,4 @@
-//import libraries
+// import libraries
 const path = require('path');
 const express = require('express');
 const compression = require('compression');
@@ -16,9 +16,9 @@ const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
 const dbURL = process.env.MONGODB_URI || 'mongodb://localhost/DomoMaker';
 
-mongoose.connect(dbURL, (err) =>{
-  if(err){
-    console.log('Could not connect to database'); 
+mongoose.connect(dbURL, (err) => {
+  if (err) {
+    console.log('Could not connect to database');
   }
 });
 
@@ -29,19 +29,19 @@ let redisURL = {
 
 let redisPASS;
 
-if(process.env.REDISCLOUD_URL) {
+if (process.env.REDISCLOUD_URL) {
   redisURL = url.parse(process.env.REDISCLOUD_URL);
   redisPASS = redisURL.auth.split(':')[1];
 }
 
-//pull in our routes
+// pull in our routes
 const router = require('./router.js');
 
 const app = express();
 app.use('/assets', express.static(path.resolve(`${__dirname}/../hosted`)));
 app.use(favicon(`${__dirname}/../hosted/img/favicon.png`));
 app.disable('x-powered-by');
-app.use(cookieParser())
+app.use(cookieParser());
 app.use(compression());
 app.use(bodyParser.urlencoded({
   extended: true,
@@ -65,23 +65,23 @@ app.use(session({
 // and app.use(session(cookieParser()));
 // should come before the router
 app.use(csrf());
-app.use((err, req, res, next) =>{
-  if(err.code !== 'EBADCSRFTOKEN') return next(err);
-  
+app.use((err, req, res, next) => {
+  if (err.code !== 'EBADCSRFTOKEN') return next(err);
+
   console.log('Missing CSRF token');
   return false;
 });
 
-app.engine('handlebars', expressHandlebars({defaultLayout: 'main'}));
+app.engine('handlebars', expressHandlebars({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
 app.set('views', `${__dirname}/../views`);
 
 
 router(app);
 
-app.listen(port, (err) =>{
-  if(err){
-    throw err; 
+app.listen(port, (err) => {
+  if (err) {
+    throw err;
   }
   console.log(`Listening on port ${port}`);
 });
