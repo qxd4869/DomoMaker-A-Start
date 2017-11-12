@@ -8,12 +8,12 @@ const handleDomo = (e) => {
     return false;
   }
   
-  sendAjax('POST', $("domoForm").attr("action"), $("domoForm").serialize(), function(){
+  sendAjax('POST', $("domoForm").attr("action"), $("domoForm").serialize(), function() {
     loadDomosFromServer();
   });
 };
   
-const Form = (props) => {
+const DomoForm = (props) => {
   return (
     <form id="domoForm"
           onSubmit={handleDomo}
@@ -33,7 +33,7 @@ const Form = (props) => {
 };
 
 const DomoList = function(props) {
-  if(props.domos.length === 0){
+  if(props.domos.length === 0) {
     return (
       <div className="domoList">
         <h3 className="emptyDomo">No Domos yet</h3>
