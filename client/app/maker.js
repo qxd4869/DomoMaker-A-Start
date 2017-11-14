@@ -11,6 +11,8 @@ const handleDomo = (e) => {
   sendAjax('POST', $("domoForm").attr("action"), $("domoForm").serialize(), function() {
     loadDomosFromServer();
   });
+  
+  return false;
 };
   
 const DomoForm = (props) => {

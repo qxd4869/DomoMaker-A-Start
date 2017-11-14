@@ -13,6 +13,8 @@ var handleDomo = function handleDomo(e) {
   sendAjax('POST', $("domoForm").attr("action"), $("domoForm").serialize(), function () {
     loadDomosFromServer();
   });
+
+  return false;
 };
 
 var DomoForm = function DomoForm(props) {

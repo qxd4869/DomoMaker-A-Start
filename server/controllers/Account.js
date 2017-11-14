@@ -89,7 +89,7 @@ const getToken = (request, response) => {
     csrfToken: req.csrfToken(),
   };
 
-  req.json(csrfJSON);
+  res.json(csrfJSON);
 };
 
 module.exports.loginPage = loginPage;
