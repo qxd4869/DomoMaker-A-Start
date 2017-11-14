@@ -3,14 +3,14 @@ const handleLogin = (e) => {
   
   $("#domoMessage").animate({width:'hide'}, 350);  
   
-  if($("#user").val() == '' || $("#pass").val() == ''){
+  if($("#user").val() == '' || $("#pass").val() == '') {
       handleError("RAWR! Username or password is empty");
       return false;
   }
   
   console.log($("input[name=_csrf]").val());
   
-  sendAjax('POST', $("#loginForm").attr("action"), $("loginForm").serialize(), redirect);
+  sendAjax('POST', $("#loginForm").attr("action"), $("#loginForm").serialize(), redirect);
   
   return false;
 };
@@ -20,17 +20,17 @@ const handleSignup = (e) => {
   
   $("#domoMessage").animate({width:'hide'}, 350);
   
-  if($("#user").val() == '' || $("pass").val() == '' || $("pass2").val() == '') {
-    handleError("RAWR: Passwords do not match");
+  if($("#user").val() == '' || $("#pass").val() == '' || $("#pass2").val() == '') {
+    handleError("RAWR! Passwords do not match");
     return false;
   }
   
   if($("#pass").val() !== $("#pass2").val()){
-    handleError("RAWR: Passwords do not match");
+    handleError("RAWR! Passwords do not match");
     return false;
   }
   
-  sendAjax('POST', $("#signupForm").attr("action"), $("signupForm").serialize(), redirect);
+  sendAjax('POST', $("#signupForm").attr("action"), $("#signupForm").serialize(), redirect);
   
   return false;
 };
@@ -69,7 +69,7 @@ const SignupWindow = (props) => {
     <label htmlFor="pass2">Password: </label>
     <input id="pass2" type ="password" name="pass2" placeholder="retype password"/>
     <input type ="hidden" name="_csrf" value={props.csrf}/>
-    <input classname="formSubmit" type ="submit" value="Sign in"/>
+    <input classname="formSubmit" type ="submit" value="Sign up"/>
     </form>
   );
 };
@@ -89,8 +89,8 @@ const createSignupWindow = (csrf) => {
 };
 
 const setup = (csrf) => {
-  const loginButton = document.querySelector('#loginButton');
-  const signupButton = document.querySelector('#signupButton');
+  const loginButton = document.querySelector("#loginButton");
+  const signupButton = document.querySelector("#signupButton");
   
   signupButton.addEventListener("click", (e) =>{
     e.preventDefault();

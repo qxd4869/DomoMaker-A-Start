@@ -12,7 +12,7 @@ var handleLogin = function handleLogin(e) {
 
   console.log($("input[name=_csrf]").val());
 
-  sendAjax('POST', $("#loginForm").attr("action"), $("loginForm").serialize(), redirect);
+  sendAjax('POST', $("#loginForm").attr("action"), $("#loginForm").serialize(), redirect);
 
   return false;
 };
@@ -22,17 +22,17 @@ var handleSignup = function handleSignup(e) {
 
   $("#domoMessage").animate({ width: 'hide' }, 350);
 
-  if ($("#user").val() == '' || $("pass").val() == '' || $("pass2").val() == '') {
-    handleError("RAWR: Passwords do not match");
+  if ($("#user").val() == '' || $("#pass").val() == '' || $("#pass2").val() == '') {
+    handleError("RAWR! Passwords do not match");
     return false;
   }
 
   if ($("#pass").val() !== $("#pass2").val()) {
-    handleError("RAWR: Passwords do not match");
+    handleError("RAWR! Passwords do not match");
     return false;
   }
 
-  sendAjax('POST', $("#signupForm").attr("action"), $("signupForm").serialize(), redirect);
+  sendAjax('POST', $("#signupForm").attr("action"), $("#signupForm").serialize(), redirect);
 
   return false;
 };
@@ -92,7 +92,7 @@ var SignupWindow = function SignupWindow(props) {
     ),
     React.createElement("input", { id: "pass2", type: "password", name: "pass2", placeholder: "retype password" }),
     React.createElement("input", { type: "hidden", name: "_csrf", value: props.csrf }),
-    React.createElement("input", { classname: "formSubmit", type: "submit", value: "Sign in" })
+    React.createElement("input", { classname: "formSubmit", type: "submit", value: "Sign up" })
   );
 };
 
@@ -105,8 +105,8 @@ var createSignupWindow = function createSignupWindow(csrf) {
 };
 
 var setup = function setup(csrf) {
-  var loginButton = document.querySelector('#loginButton');
-  var signupButton = document.querySelector('#signupButton');
+  var loginButton = document.querySelector("#loginButton");
+  var signupButton = document.querySelector("#signupButton");
 
   signupButton.addEventListener("click", function (e) {
     e.preventDefault();
@@ -140,8 +140,8 @@ var handleError = function handleError(message) {
 };
 
 var redirect = function redirect(response) {
-  $("domoMessage").animate({ width: 'hide' }, 350);
-  window.location = resposne.redirect;
+  $("#domoMessage").animate({ width: 'hide' }, 350);
+  window.location = response.redirect;
 };
 
 var sendAjax = function sendAjax(type, action, data, success) {

@@ -3,12 +3,12 @@ const handleDomo = (e) => {
   
   $("#domoMessage").animate({width:'hide'}, 350);
   
-  if($("#domoName").val() =='' || $("#domoAge").val() ==''){
+  if($("#domoName").val() == '' || $("#domoAge").val() ==''){
     handleError("RAWR: All fields are required");
     return false;
   }
   
-  sendAjax('POST', $("domoForm").attr("action"), $("domoForm").serialize(), function() {
+  sendAjax('POST', $("#domoForm").attr("action"), $("#domoForm").serialize(), function() {
     loadDomosFromServer();
   });
   
@@ -60,19 +60,19 @@ const DomoList = function(props) {
 };
 
 const loadDomosFromServer = () => {
-  sendAJAX('GET', '/getDomos', null, (data) =>{
+  sendAjax('GET', '/getDomos', null, (data) => {
     ReactDOM.render(
       <DomoList domos={data.domos} />, document.querySelector('#domos')
     );
   });
 };
 
-const setup = function(csrc){
+const setup = function(csrf){
   ReactDOM.render(
-    <DomoForm csrf={crsf} />, document.querySelector('#makeDomo')
+    <DomoForm csrf={csrf} />, document.querySelector('#makeDomo')
   );
   
-  ReactDom.render(
+  ReactDOM.render(
     <DomoList domo={[]} />, document.querySelector("#domos")
   );
   

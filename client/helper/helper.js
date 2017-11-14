@@ -5,8 +5,8 @@ const handleError = (message) => {
 };
 
 const redirect = (response) => {
-  $("domoMessage").animate({width: 'hide'}, 350);
-  window.location = resposne.redirect;
+  $("#domoMessage").animate({width: 'hide'}, 350);
+  window.location = response.redirect;
 };
 
 const sendAjax = (type, action, data, success) => {

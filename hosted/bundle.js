@@ -10,7 +10,7 @@ var handleDomo = function handleDomo(e) {
     return false;
   }
 
-  sendAjax('POST', $("domoForm").attr("action"), $("domoForm").serialize(), function () {
+  sendAjax('POST', $("#domoForm").attr("action"), $("#domoForm").serialize(), function () {
     loadDomosFromServer();
   });
 
@@ -85,15 +85,15 @@ var DomoList = function DomoList(props) {
 };
 
 var loadDomosFromServer = function loadDomosFromServer() {
-  sendAJAX('GET', '/getDomos', null, function (data) {
+  sendAjax('GET', '/getDomos', null, function (data) {
     ReactDOM.render(React.createElement(DomoList, { domos: data.domos }), document.querySelector('#domos'));
   });
 };
 
-var setup = function setup(csrc) {
-  ReactDOM.render(React.createElement(DomoForm, { csrf: crsf }), document.querySelector('#makeDomo'));
+var setup = function setup(csrf) {
+  ReactDOM.render(React.createElement(DomoForm, { csrf: csrf }), document.querySelector('#makeDomo'));
 
-  ReactDom.render(React.createElement(DomoList, { domo: [] }), document.querySelector("#domos"));
+  ReactDOM.render(React.createElement(DomoList, { domo: [] }), document.querySelector("#domos"));
 
   loadDomosFromServer();
 };
@@ -115,8 +115,8 @@ var handleError = function handleError(message) {
 };
 
 var redirect = function redirect(response) {
-  $("domoMessage").animate({ width: 'hide' }, 350);
-  window.location = resposne.redirect;
+  $("#domoMessage").animate({ width: 'hide' }, 350);
+  window.location = response.redirect;
 };
 
 var sendAjax = function sendAjax(type, action, data, success) {
