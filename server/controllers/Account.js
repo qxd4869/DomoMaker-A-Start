@@ -2,31 +2,33 @@ const models = require('../models');
 
 const Account = models.Account;
 
+// GET responses for accounts
 const loginPage = (req, res) => {
   res.render('login', { csrfToken: req.csrfToken() });
 };
-
 
 const logout = (req, res) => {
   req.session.destroy();
   res.redirect('/');
 };
 
+// POST responses for accounts
 const login = (request, response) => {
   const req = request;
   const res = response;
 
-  // force cast to strings to cover some security flaws
+  // cast to strings to cover up some security flaws
   const username = `${req.body.username}`;
   const password = `${req.body.pass}`;
 
+  // validate data
   if (!username || !password) {
-    return res.status(400).json({ error: 'RAWR: All fields are required' });
+    return res.status(400).json({ error: 'RAWR! All fields are required!' });
   }
 
   return Account.AccountModel.authenticate(username, password, (err, account) => {
     if (err || !account) {
-      return res.status(401).json({ error: 'Wrong username or password' });
+      return res.status(401).json({ error: 'Wrong username or password!' });
     }
 
     req.session.account = Account.AccountModel.toAPI(account);
@@ -44,12 +46,13 @@ const signup = (request, response) => {
   req.body.pass = `${req.body.pass}`;
   req.body.pass2 = `${req.body.pass2}`;
 
+  // validate data
   if (!req.body.username || !req.body.pass || !req.body.pass2) {
-    return res.status(400).json({ error: 'RAWR: All fields are required' });
+    return res.status(400).json({ error: 'RAWR! All fields are required!' });
   }
 
   if (req.body.pass !== req.body.pass2) {
-    return res.status(400).json({ error: 'RAWR: All fields are required' });
+    return res.status(400).json({ error: 'RAWR! Passwords do not match!' });
   }
 
   return Account.AccountModel.generateHash(req.body.pass, (salt, hash) => {
@@ -58,7 +61,6 @@ const signup = (request, response) => {
       salt,
       password: hash,
     };
-
 
     const newAccount = new Account.AccountModel(accountData);
 
@@ -73,10 +75,10 @@ const signup = (request, response) => {
       console.log(err);
 
       if (err.code === 11000) {
-        return res.status(400).json({ error: 'Username already in use.' });
+        return res.status(400).json({ error: 'RAWR! Username already exists!' });
       }
 
-      return res.status(400).json({ error: 'An error occurred' });
+      return res.status(400).json({ error: 'An error occurred!' });
     });
   });
 };
@@ -92,8 +94,10 @@ const getToken = (request, response) => {
   res.json(csrfJSON);
 };
 
-module.exports.loginPage = loginPage;
-module.exports.login = login;
-module.exports.logout = logout;
-module.exports.signup = signup;
-module.exports.getToken = getToken;
+module.exports = {
+  loginPage,
+  logout,
+  login,
+  signup,
+  getToken,
+};

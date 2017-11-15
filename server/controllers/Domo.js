@@ -6,7 +6,7 @@ const makerPage = (req, res) => {
   Domo.DomoModel.findByOwner(req.session.account._id, (err, docs) => {
     if (err) {
       console.log(err);
-      return res.status(400).json({ error: 'An error occurred' });
+      return res.status(400).json({ error: 'RAWR! An error occurred!' });
     }
 
     return res.render('app', { csrfToken: req.csrfToken(), domos: docs });
@@ -14,13 +14,14 @@ const makerPage = (req, res) => {
 };
 
 const makeDomo = (req, res) => {
-  if (!req.body.name || !req.body.age) {
-    return res.status(400).json({ error: 'RAWR! Both name age age are required' });
+  if (!req.body.name || !req.body.age || !req.body.strength) {
+    return res.status(400).json({ error: 'RAWR! Both name and age are required!' });
   }
 
   const domoData = {
     name: req.body.name,
     age: req.body.age,
+    strength: req.body.strength,
     owner: req.session.account._id,
   };
 
@@ -33,10 +34,10 @@ const makeDomo = (req, res) => {
   domoPromise.catch((err) => {
     console.log(err);
     if (err.code === 11000) {
-      return res.status(400).json({ error: 'Domo already exists.' });
+      return res.status(400).json({ error: 'RAWR! Domo already exists!' });
     }
 
-    return res.status(400).json({ error: 'An error occurred' });
+    return res.status(400).json({ error: 'RAWR! An error occurred!' });
   });
 
   return domoPromise;
@@ -45,17 +46,38 @@ const makeDomo = (req, res) => {
 const getDomos = (request, response) => {
   const req = request;
   const res = response;
-  return Domo.DomoModel.findByOwner(req.session.account_id, (err, docs) => {
+
+  return Domo.DomoModel.findByOwner(req.session.account._id, (err, docs) => {
     if (err) {
       console.log(err);
-      return res.status(400).json({ error: 'An error occurred' });
+      return res.status(400).json({ error: 'RAWR! An error occurred!' });
     }
 
     return res.json({ domos: docs });
   });
 };
 
-module.exports.makerPage = makerPage;
-module.exports.getDomos = getDomos;
-module.exports.make = makeDomo;
+const deleteDomo = (req, res) => {
+  const { id } = req.body;
+  
+  if(!id){
+    return res.status(400).json({ error: 'RAWR! That domo cannot be deleted' });  
+  }
+  
+  return Domo.DomoModel.remove({ _id: id })
+    .then(() => res.json({ redirect: '/maker' }))
+    .catch((err) => {
+      log(chalk.red(err));
 
+      return res.status(400).json({ error: 'An error occurred' });
+    });
+
+  return domoDelete;
+};
+
+module.exports = {
+  makerPage,
+  make: makeDomo,
+  getDomos,
+  deleteDomo,
+};

@@ -16,12 +16,15 @@ const port = process.env.PORT || process.env.NODE_PORT || 3000;
 
 const dbURL = process.env.MONGODB_URI || 'mongodb://localhost/DomoMaker';
 
+// connect to database
 mongoose.connect(dbURL, (err) => {
   if (err) {
     console.log('Could not connect to database');
+    throw err;
   }
 });
 
+// connect to redis
 let redisURL = {
   hostname: 'localhost',
   port: 6379,
@@ -38,10 +41,10 @@ if (process.env.REDISCLOUD_URL) {
 const router = require('./router.js');
 
 const app = express();
-app.use('/assets', express.static(path.resolve(`${__dirname}/../hosted`)));
+
+app.use('/assets', express.static(path.resolve(`${__dirname}/../hosted/`)));
 app.use(favicon(`${__dirname}/../hosted/img/favicon.png`));
 app.disable('x-powered-by');
-app.use(cookieParser());
 app.use(compression());
 app.use(bodyParser.urlencoded({
   extended: true,
@@ -53,29 +56,28 @@ app.use(session({
     port: redisURL.port,
     pass: redisPASS,
   }),
-  secret: 'Domo Agrigato',
+  secret: 'Domo Arigato',
   resave: true,
   saveUninitialized: true,
   cookie: {
     httpOnly: true,
   },
 }));
-
-// csrf must come after app.use(cookieParser());
-// and app.use(session(cookieParser()));
-// should come before the router
-app.use(csrf());
-app.use((err, req, res, next) => {
-  if (err.code !== 'EBADCSRFTOKEN') return next(err);
-
-  console.log('Missing CSRF token');
-  return false;
-});
-
 app.engine('handlebars', expressHandlebars({ defaultLayout: 'main' }));
 app.set('view engine', 'handlebars');
 app.set('views', `${__dirname}/../views`);
+app.use(cookieParser());
 
+// csrf must come AFTER app.use(cookirParser());
+// and app.use(session({...}));
+// should also come BEFORE router(app);
+app.use(csrf());
+app.use((err, req, res, next) => {
+  if (err.code !== 'EBADCSRFTOKEN') return next(err);
+  
+  console.log('Missing CSRF token');
+  return false;
+});
 
 router(app);
 
@@ -83,5 +85,4 @@ app.listen(port, (err) => {
   if (err) {
     throw err;
   }
-  console.log(`Listening on port ${port}`);
 });
