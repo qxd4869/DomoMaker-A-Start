@@ -1,6 +1,6 @@
 'use strict';
 
-var handleDomo = function handleDomo(e) {
+var handleDomo = function handleDomo(e, csrf) {
   e.preventDefault();
 
   $('#domoMessage').animate({ width: 'hide' }, 350);
@@ -11,7 +11,7 @@ var handleDomo = function handleDomo(e) {
   }
 
   sendAjax('POST', $('#domoForm').attr('action'), $('#domoForm').serialize(), function () {
-    loadDomosFromServer();
+    loadDomosFromServer(csrf);
   });
 
   return false;
@@ -22,14 +22,18 @@ var deleteDomo = function deleteDomo(e, id, csrf) {
 
   $('domoMessage').animate({ width: 'hide' }, 350);
 
-  sendAjax('POST', '/deleteDomo', 'id=' + id + '&_csrf=' + csrf, loadDomosFromServer);
+  sendAjax('POST', '/deleteDomo', 'id=' + id + '&_csrf=' + csrf, function () {
+    loadDomosFromServer(csrf);
+  });
 };
 
 var DomoForm = function DomoForm(props) {
   return React.createElement(
     'form',
     { id: 'domoForm',
-      onSubmit: handleDomo,
+      onSubmit: function onSubmit(e) {
+        handleDomo(e, props.csrf);
+      },
       name: 'domoForm',
       action: '/maker',
       method: 'POST',
@@ -113,20 +117,19 @@ var DomoList = function DomoList(props) {
   );
 };
 
-var loadDomosFromServer = function loadDomosFromServer() {
+var loadDomosFromServer = function loadDomosFromServer(csrf) {
   sendAjax('GET', '/getDomos', null, function (data) {
-    ReactDOM.render(React.createElement(DomoList, { domos: data.domos }), document.querySelector('#domos'));
+    ReactDOM.render(React.createElement(DomoList, { domos: data.domos, csrf: csrf }), document.querySelector('#domos'));
   });
 };
 
 var setup = function setup(csrf) {
-  globalCsrfToken = csrf;
 
   ReactDOM.render(React.createElement(DomoForm, { csrf: csrf }), document.querySelector('#makeDomo'));
 
-  ReactDOM.render(React.createElement(DomoList, { domos: [] }), document.querySelector('#domos'));
+  ReactDOM.render(React.createElement(DomoList, { domos: [], csrf: csrf }), document.querySelector('#domos'));
 
-  loadDomosFromServer();
+  loadDomosFromServer(csrf);
 };
 
 var getToken = function getToken() {

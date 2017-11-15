@@ -1,4 +1,4 @@
-const handleDomo = (e) => {
+const handleDomo = (e, csrf) => {
   e.preventDefault();
   
   $('#domoMessage').animate({ width: 'hide' }, 350);
@@ -9,7 +9,7 @@ const handleDomo = (e) => {
   }
   
   sendAjax('POST', $('#domoForm').attr('action'), $('#domoForm').serialize(), () => {
-    loadDomosFromServer();
+    loadDomosFromServer(csrf);
   });
   
   return false;
@@ -18,16 +18,18 @@ const handleDomo = (e) => {
 const deleteDomo = (e, id, csrf) => {
   e.preventDefault();
  
+  
   $('domoMessage').animate({ width: 'hide' }, 350);
 
-  sendAjax('POST', '/deleteDomo', `id=${id}&_csrf=${csrf}`, loadDomosFromServer);
-  
+  sendAjax('POST', '/deleteDomo', `id=${id}&_csrf=${csrf}`, () =>{
+    loadDomosFromServer(csrf);
+  });
 };
 
 const DomoForm = (props) => {
   return (
     <form id="domoForm"
-          onSubmit={handleDomo}
+          onSubmit={(e) => { handleDomo(e, props.csrf );}}
           name="domoForm"
           action="/maker"
           method="POST"
@@ -74,17 +76,16 @@ const DomoList = (props) => {
   );
 };
 
-const loadDomosFromServer = () => {
+const loadDomosFromServer = (csrf) => {
   sendAjax('GET', '/getDomos', null, (data) => {
     ReactDOM.render(
-      <DomoList domos={data.domos} />,
+      <DomoList domos={data.domos} csrf={csrf} />,
       document.querySelector('#domos'),
     );
   });
 };
 
 const setup = (csrf) => {
-  globalCsrfToken = csrf;
   
   ReactDOM.render(
     <DomoForm csrf={csrf} />,
@@ -92,11 +93,11 @@ const setup = (csrf) => {
   );
   
   ReactDOM.render(
-    <DomoList domos={[]} />,
+    <DomoList domos={[]} csrf={csrf} />,
     document.querySelector('#domos'),
   );
   
-  loadDomosFromServer();
+  loadDomosFromServer(csrf);
 };
 
 const getToken = () => {

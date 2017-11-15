@@ -58,9 +58,25 @@ const getDomos = (request, response) => {
 };
 
 const deleteDomo = (req, res) => {
-  const  id  = req.body;
+  const id = req.body.id;
 
-  
+  if (!id) {
+    return res.status(400).json({ error: 'RAWR! That domo cannot be deleted' });
+  }
+  const domoPromise = Domo.DomoModel.remove({ _id: id });
+
+  domoPromise.then(() => res.json({ redirect: '/maker' }));
+
+  domoPromise.catch((err) => {
+    console.log(err);
+    if (err.code === 11000) {
+      return res.status(400).json({ error: 'RAWR! Domo already exists!' });
+    }
+
+    return res.status(400).json({ error: 'RAWR! An error occurred!' });
+  });
+
+  return domoPromise;
 };
 
 module.exports = {
