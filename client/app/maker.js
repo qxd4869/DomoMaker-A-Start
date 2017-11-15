@@ -1,4 +1,3 @@
-let globalCsrfToken;
 const handleDomo = (e) => {
   e.preventDefault();
   
@@ -18,7 +17,7 @@ const handleDomo = (e) => {
 
 const deleteDomo = (e, id, csrf) => {
   e.preventDefault();
-
+ 
   $('domoMessage').animate({ width: 'hide' }, 350);
 
   sendAjax('POST', '/deleteDomo', `id=${id}&_csrf=${csrf}`, loadDomosFromServer);
@@ -61,7 +60,7 @@ const DomoList = (props) => {
         <h3 className="domoName"> Name: {domo.name} </h3>
         <h3 className="domoAge"> Age: {domo.age} </h3>
         <h3 className="domoStrength"> Strength: {domo.strength} </h3>
-        <button onClick={(e) => { deleteDomo(e, domo._id, globalCsrfToken ); }}>
+        <button onClick={(e) => { deleteDomo(e, domo._id, props.csrf ); }}>
               DELETE
         </button>
       </div>

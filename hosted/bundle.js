@@ -1,6 +1,5 @@
 'use strict';
 
-var globalCsrfToken = void 0;
 var handleDomo = function handleDomo(e) {
   e.preventDefault();
 
@@ -100,7 +99,7 @@ var DomoList = function DomoList(props) {
       React.createElement(
         'button',
         { onClick: function onClick(e) {
-            deleteDomo(e, domo._id, globalCsrfToken);
+            deleteDomo(e, domo._id, props.csrf);
           } },
         'DELETE'
       )

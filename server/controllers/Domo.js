@@ -58,21 +58,9 @@ const getDomos = (request, response) => {
 };
 
 const deleteDomo = (req, res) => {
-  const { id } = req.body;
-  
-  if(!id){
-    return res.status(400).json({ error: 'RAWR! That domo cannot be deleted' });  
-  }
-  
-  return Domo.DomoModel.remove({ _id: id })
-    .then(() => res.json({ redirect: '/maker' }))
-    .catch((err) => {
-      log(chalk.red(err));
+  const  id  = req.body;
 
-      return res.status(400).json({ error: 'An error occurred' });
-    });
-
-  return domoDelete;
+  
 };
 
 module.exports = {
